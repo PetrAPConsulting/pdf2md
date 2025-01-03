@@ -1,6 +1,6 @@
 # PDF to Markdown Converter
 
-This tool helps you convert complex PDF files (columns, tables, formulas) into clear Markdown format using Google's Gemini vision models. It's designed to be simple to use, even if you're not familiar with programming.
+This tool helps you convert complex PDF files (columns, tables, formulas) into clear Markdown format using Google's Gemini vision models. You even do not need OCR. It's designed to be simple to use, even if you're not familiar with programming.
 
 ## What Does It Do?
 
