@@ -8,7 +8,7 @@ import sys
 from typing import Dict, Optional
 
 # --- START: API KEY INSERTION ---
-API_KEY = "AIzaSyBhO42RB-NhhC_kb8cdgsFL5I4ZUc0RPEw"  # <--- INSERT YOUR API KEY HERE
+API_KEY = "INSERT YOUR API KEY HERE"  # <--- INSERT YOUR API KEY HERE
 # --- END: API KEY INSERTION ---
 
 # Gemini Model Options
