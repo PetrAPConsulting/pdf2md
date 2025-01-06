@@ -77,6 +77,12 @@ def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
            - Describe charts/graphs with key data points
            - Include captions and references
            - Note any important visual elements
+           - Convert flowcharts and diagrams to mermaid markdown syntax when possible:
+	```mermaid
+	graph LR
+        A-->B
+        B-->C
+	```
 
         Convert everything to clean, valid Markdown without adding any explanatory text.
         Focus on accuracy and maintaining the original document's structure and meaning.
