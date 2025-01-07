@@ -61,28 +61,36 @@ def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
            - Use appropriate Markdown headers (# for main titles, ## for subtitles, etc.)
            - Maintain original paragraph spacing
            - Keep all lists and enumerations in proper Markdown format
+           - Maintain numerical precision exactly as shown
 
         2. Special Elements:
-           - Tables: Convert to Markdown tables (|header|header|) with alignment
+           - Tables: Convert to proper Markdown tables with headers and data rows with alignment. For example:
+           | Column1 | Column2 |
+           |---------|---------|
+           | Data1   | Data2   |
            - Code blocks: Use triple backticks with language specification
-           - Mathematical formulas: Convert to LaTeX format between $$ markers
+           - Mathematical formulas: Convert to LaTeX format between $$ markers. For example: $$ y = mx + b $$
            - Links: Preserve as Markdown links [text](url)
+           - Process Flows: Create a numbered list with clear step progression and any branching conditions.
+           - Charts and Graphs: Extract the actual data points and represent them in a markdown table. Include axis labels, units, and scale information. Describe the relationship pattern (linear, exponential, etc.) as a markdown header.   
 
         3. Formatting:
            - Preserve bold, italic, and other text styling
            - Maintain all diacritical marks and special characters
            - Keep original text indentation where meaningful
-
+           - Preserve all labels and annotations as markdown text
+           - Structure the output to prioritize machine readability
+  
         4. Graphics and Figures:
-           - Describe charts/graphs with key data points
            - Include captions and references
            - Note any important visual elements
+           - Preserve any measurements or specifications in tables
            - Convert flowcharts and diagrams to mermaid markdown syntax when possible:
-	```mermaid
-	graph LR
-        A-->B
-        B-->C
-	```
+        	```mermaid
+		graph LR
+                    A-->B
+                    B-->C
+        	```
 
         Convert everything to clean, valid Markdown without adding any explanatory text.
         Focus on accuracy and maintaining the original document's structure and meaning.
