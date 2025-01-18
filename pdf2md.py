@@ -76,6 +76,12 @@ def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
 
         3. Formatting:
            - Preserve bold, italic, and other text styling
+           - Please convert the multi-column text to a single column format with these specific requirements:
+                - Use the full available page width
+                - Remove hyphenation that was used for line breaks in the original narrow columns
+                - Rejoin hyphenated words that were split across lines
+                - Reflow all text to fill the entire width of the page
+                - Remove any artificial line breaks from the original column formatting
            - Maintain all diacritical marks and special characters
            - Keep original text indentation where meaningful
            - Preserve all labels and annotations as markdown text
