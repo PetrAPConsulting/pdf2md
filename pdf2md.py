@@ -77,6 +77,11 @@ def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
         3. Formatting:
            - Preserve bold, italic, and other text styling
            - Please convert the multi-column text to a single column format with these specific requirements:
+                - Process the text column by column, from left to right
+                - Complete each column from top to bottom before moving to the next column
+                - Maintain the original reading order: first column 1 top to bottom, then column 2 top to bottom, etc.
+                - Do not jump between columns mid-text
+                - Keep paragraphs in their original sequence as they appear in the source document            
                 - Use the full available page width
                 - Remove hyphenation that was used for line breaks in the original narrow columns
                 - Rejoin hyphenated words that were split across lines
