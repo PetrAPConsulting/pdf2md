@@ -79,7 +79,8 @@ def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
            - Please convert the multi-column text to a single column format with these specific requirements:
                 - Process the text column by column, from left to right
                 - Complete each column from top to bottom before moving to the next column
-                - Maintain the original reading order: first column 1 top to bottom, then column 2 top to bottom, etc.
+		- Ensure paragraphs that continue across pages are kept together and completed before moving to the next paragraph
+                - Look for context clues like incomplete sentences at the bottom of a page and their continuation at the top of the next page in the same column
                 - Do not jump between columns mid-text
                 - Keep paragraphs in their original sequence as they appear in the source document            
                 - Use the full available page width
