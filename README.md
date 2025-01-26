@@ -80,7 +80,7 @@ If you run into problems:
 ## Notes
 
 - The conversion quality depends on the PDF's structure and content
-- Some complex layouts might not convert perfectly
+- Some complex layouts might not convert perfectly or you have to parse long complex multicolumn texts to more documents. Based on testing, 5-6 pages is maximum in one complex document if you're using free tier Google API
 - The script needs internet connection to work
 - Each PDF conversion uses your Google API quota, choose model wisely 
 
