@@ -50,10 +50,8 @@ This tool helps you convert complex PDF files (columns, tables, formulas, charts
    ```
 
 4. Choose a model when prompted:
-   - Press 1 for the fastest and cheapest conversion (good for simple documents)
-   - Press 2 for the highest quality (best for complex documents)
-   - Press 3 for the excellent experimental model (check out for name on Google API site and modify appropriately) 
-
+   - Press number to pick a suitable model. Flash models are included in free tier with some RPM limits, Pro models are always paid
+   
 5. Wait for the conversion to finish
    - The script will create an "output" folder
    - Your converted Markdown files will be saved there
