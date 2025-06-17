@@ -13,9 +13,9 @@ API_KEY = "INSERT YOUR API KEY HERE"  # <--- INSERT YOUR API KEY HERE
 
 # Gemini Model Options
 MODEL_OPTIONS: Dict[int, tuple] = {
-    1: ("Gemini 1.5 Flash", "gemini-1.5-flash-002", "Fastest, good for simple documents"),
-    2: ("Gemini 1.5 Pro", "gemini-1.5-pro-002", "Best quality, handles complex documents"),
-    3: ("Gemini 2.0 Flash", "gemini-2.0-flash-001", "Excellent quality, comparable with Pro")
+    1: ("Gemini 2.5 Flash", "gemini-2.5-flash", "Fast, excellent new model, free tier"),
+    2: ("Gemini 2.5 Pro", "gemini-2.5-pro", "Best quality, for complex documents, always paid"),
+    3: ("Gemini 2.0 Flash", "gemini-2.0-flash", "Fastest with good quality, free tier")
 }
 
 def display_models() -> None:
