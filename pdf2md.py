@@ -17,6 +17,9 @@ MODEL_OPTIONS: dict[int, tuple[str, str, str]] = {
     2: ("Gemini 3 Pro", "gemini-3-pro-preview", "Most powerful model"),
 }
 
+# Generation Settings
+TEMPERATURE = 1.0  # 1.0 is default and recommended for Gemini 3 models
+THINKING_LEVEL = "HIGH"  # Options (FLASH): "MINIMAL", "LOW", "MEDIUM", "HIGH" Options (PRO): "LOW", "HIGH"
 
 def display_models() -> None:
     """Display available models with their descriptions."""
