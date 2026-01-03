@@ -9,6 +9,7 @@ This tool helps you convert complex PDF files (columns, tables, formulas, charts
 - Handles tables, formulas using LaTeX, and special characters
 - Processes multiple PDF files at once
 - Creates clean, readable Markdown files
+- Very well handles hand written texts
 
 ## Before You Start
 
@@ -18,7 +19,7 @@ This tool helps you convert complex PDF files (columns, tables, formulas, charts
 
 2. Required Python packages:
    ```bash
-   pip install google-generativeai pathlib
+   pip3 install google-genai
    ```
 
 ## Setup Instructions
@@ -50,7 +51,7 @@ This tool helps you convert complex PDF files (columns, tables, formulas, charts
    ```
 
 4. Choose a model when prompted:
-   - Press number to pick a suitable model. Flash models are included in free tier with some RPM limits, Pro models are always paid
+   - Press number to pick a suitable model. New generation of Gemini 3 models is not only more powerful but as we as cheaper than Gemini 2.5.
    
 5. Wait for the conversion to finish
    - The script will create an "output" folder
