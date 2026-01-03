@@ -1,55 +1,55 @@
 import os
 import glob
-import google.generativeai as genai
+from google import genai
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 import sys
-from typing import Dict, Optional
+from typing import Optional
 
 # --- START: API KEY INSERTION ---
-API_KEY = "INSERT YOUR API KEY HERE"  # <--- INSERT YOUR API KEY HERE
+API_KEY = "YOUR_API_KEY_HERE"  # <--- INSERT YOUR API KEY HERE
 # --- END: API KEY INSERTION ---
 
 # Gemini Model Options
-MODEL_OPTIONS: Dict[int, tuple] = {
-    1: ("Gemini 2.5 Flash", "gemini-2.5-flash", "Fast, excellent new model, free tier"),
-    2: ("Gemini 2.5 Pro", "gemini-2.5-pro", "Best quality, for complex documents, always paid"),
-    3: ("Gemini 2.0 Flash", "gemini-2.0-flash", "Fastest with good quality, free tier")
+MODEL_OPTIONS: dict[int, tuple[str, str, str]] = {
+    1: ("Gemini 3 Flash", "gemini-3-flash-preview", "Fast and efficient"),
+    2: ("Gemini 3 Pro", "gemini-3-pro-preview", "Most powerful model"),
 }
+
 
 def display_models() -> None:
     """Display available models with their descriptions."""
     print("\nAvailable Models:")
     print("-" * 50)
     for num, (name, model_id, description) in MODEL_OPTIONS.items():
-        print(f"{num}. {name:<10} - {description}")
+        print(f"{num}. {name:<15} - {description}")
     print("-" * 50)
+
 
 def get_model_choice() -> Optional[str]:
     """Get and validate user's model choice."""
     while True:
         display_models()
         try:
-            choice = int(input("\nEnter model number (1-3): "))
+            choice = int(input("\nEnter model number (1-2): "))
             if choice in MODEL_OPTIONS:
                 return MODEL_OPTIONS[choice][1]
-            print("Invalid choice. Please select a number between 1 and 3.")
+            print("Invalid choice. Please select 1 or 2.")
         except ValueError:
             print("Please enter a valid number.")
         except KeyboardInterrupt:
             print("\nOperation cancelled by user.")
             return None
 
-def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
+
+def pdf_to_markdown(pdf_path: str, model_name: str, client: genai.Client) -> Optional[str]:
     """Convert PDF to Markdown using Gemini API."""
     try:
         print(f"Processing: {pdf_path}")
         print(f"Using model: {model_name}")
-        
-        genai.configure(api_key=API_KEY)
-        model = genai.GenerativeModel(model_name)
 
+        # Read PDF content
         with open(pdf_path, "rb") as pdf_file:
             pdf_content = pdf_file.read()
 
@@ -72,17 +72,17 @@ def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
            - Mathematical formulas: Convert to LaTeX format between $$ markers. For example: $$ y = mx + b $$
            - Links: Preserve as Markdown links [text](url)
            - Process Flows: Create a numbered list with clear step progression and any branching conditions.
-           - Charts and Graphs: Extract the actual data points and represent them in a markdown table. Include axis labels, units, and scale information. Describe the relationship pattern (linear, exponential, etc.) as a markdown header.   
+           - Charts and Graphs: Extract the actual data points and represent them in a markdown table. Include axis labels, units, and scale information. Describe the relationship pattern (linear, exponential, etc.) as a markdown header.
 
         3. Formatting:
            - Preserve bold, italic, and other text styling
            - Please convert the multi-column text to a single column format with these specific requirements:
                 - Process the text column by column, from left to right
                 - Complete each column from top to bottom before moving to the next column
-		- Ensure paragraphs that continue across pages are kept together and completed before moving to the next paragraph
+                - Ensure paragraphs that continue across pages are kept together and completed before moving to the next paragraph
                 - Look for context clues like incomplete sentences at the bottom of a page and their continuation at the top of the next page in the same column
                 - Do not jump between columns mid-text
-                - Keep paragraphs in their original sequence as they appear in the source document            
+                - Keep paragraphs in their original sequence as they appear in the source document
                 - Use the full available page width
                 - Remove hyphenation that was used for line breaks in the original narrow columns
                 - Rejoin hyphenated words that were split across lines
@@ -92,26 +92,30 @@ def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
            - Keep original text indentation where meaningful
            - Preserve all labels and annotations as markdown text
            - Structure the output to prioritize machine readability
-  
+
         4. Graphics and Figures:
            - Include captions and references
            - Note any important visual elements
            - Preserve any measurements or specifications in tables
            - Convert flowcharts and diagrams to mermaid markdown syntax when possible:
-        	```mermaid
-		graph LR
-                    A-->B
-                    B-->C
-        	```
+            ```mermaid
+            graph LR
+                A-->B
+                B-->C
+            ```
 
         Convert everything to clean, valid Markdown without adding any explanatory text.
         Focus on accuracy and maintaining the original document's structure and meaning.
         """
-        
-        response = model.generate_content([
-            prompt,
-            {"mime_type": "application/pdf", "data": pdf_content},
-        ])
+
+        # Use the new google-genai SDK API
+        response = client.models.generate_content(
+            model=model_name,
+            contents=[
+                prompt,
+                genai.types.Part.from_bytes(data=pdf_content, mime_type="application/pdf"),
+            ],
+        )
 
         markdown_content = response.text
 
@@ -125,6 +129,7 @@ def pdf_to_markdown(pdf_path: str, model_name: str) -> Optional[str]:
         print(f"Error processing {pdf_path}: {str(e)}")
         return None
 
+
 def save_markdown(markdown_content: str, output_path: str) -> bool:
     """Save Markdown content to file."""
     try:
@@ -136,10 +141,11 @@ def save_markdown(markdown_content: str, output_path: str) -> bool:
         print(f"✗ Error saving {output_path}: {str(e)}")
         return False
 
-def process_pdf(pdf_path: str, model_name: str, output_dir: str) -> bool:
+
+def process_pdf(pdf_path: str, model_name: str, output_dir: str, client: genai.Client) -> bool:
     """Process a single PDF file."""
     try:
-        markdown_content = pdf_to_markdown(pdf_path, model_name)
+        markdown_content = pdf_to_markdown(pdf_path, model_name, client)
         if markdown_content:
             output_filename = Path(pdf_path).stem + ".md"
             output_path = os.path.join(output_dir, output_filename)
@@ -149,9 +155,10 @@ def process_pdf(pdf_path: str, model_name: str, output_dir: str) -> bool:
         print(f"Error processing {pdf_path}: {str(e)}")
         return False
 
+
 def main() -> None:
     """Main function to run the PDF to Markdown converter."""
-    print(f"PDF to Markdown Converter")
+    print("PDF to Markdown Converter")
     print(f"Python executable: {sys.executable}")
     print("-" * 50)
 
@@ -171,6 +178,9 @@ def main() -> None:
     if not model_name:
         return
 
+    # Initialize the client with new google-genai SDK
+    client = genai.Client(api_key=API_KEY)
+
     # Find PDF files
     pdf_files = glob.glob(os.path.join(input_dir, "*.pdf"))
     if not pdf_files:
@@ -178,17 +188,17 @@ def main() -> None:
         return
 
     print(f"\nFound {len(pdf_files)} PDF files.")
-    
+
     # Process files
     start_time = time.time()
     successful_conversions = 0
-    
+
     with ThreadPoolExecutor(max_workers=4) as executor:
         futures = [
-            executor.submit(process_pdf, pdf_path, model_name, output_dir)
+            executor.submit(process_pdf, pdf_path, model_name, output_dir, client)
             for pdf_path in pdf_files
         ]
-        
+
         for future in as_completed(futures):
             if future.result():
                 successful_conversions += 1
@@ -203,8 +213,9 @@ def main() -> None:
     print(f"Successful conversions: {successful_conversions}")
     print(f"Failed conversions: {len(pdf_files) - successful_conversions}")
     print(f"Total time: {duration:.2f} seconds")
-    print(f"Average time per file: {duration/len(pdf_files):.2f} seconds")
+    print(f"Average time per file: {duration / len(pdf_files):.2f} seconds")
     print(f"\nOutput directory: {output_dir}")
+
 
 if __name__ == "__main__":
     try:
